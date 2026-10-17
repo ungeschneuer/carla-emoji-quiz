@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eine kleine Überraschung für Carla ✨</title>
+<style>
+  :root { --navy:#171536; --purple:#6f4bf2; --pink:#ff70a6; --cream:#fff8ef; --ink:#24213d; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100vh; min-height:100svh; color:var(--ink);
+    font-family: ui-rounded, "Avenir Next", system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at 15% 10%, #ffd7e7 0, transparent 30%),
+                radial-gradient(circle at 90% 20%, #d9d0ff 0, transparent 28%),
+                linear-gradient(145deg,#fff8ef,#f4f0ff);
+    display:flex; align-items:center; justify-content:center; padding:22px; padding-left:max(16px, env(safe-area-inset-left)); padding-right:max(16px, env(safe-area-inset-right));
+  }
+  .wrap { width:min(760px,100%); }
+  .top { text-align:center; margin-bottom:18px; }
+  .eyebrow { text-transform:uppercase; letter-spacing:.16em; font-size:.75rem; font-weight:800; color:#6f4bf2; }
+  h1 { font-size:clamp(2rem,6vw,3.5rem); line-height:1.03; margin:.45rem 0; color:var(--navy); }
+  .sub { margin:0 auto; max-width:530px; color:#5c5878; line-height:1.55; }
+  .card { background:rgba(255,255,255,.88); border:1px solid rgba(111,75,242,.15); border-radius:28px; padding:clamp(22px,5vw,42px); box-shadow:0 22px 70px #2c1a5b16; backdrop-filter:blur(10px); }
+  .progress { height:7px; background:#ece8fa; border-radius:20px; overflow:hidden; margin-bottom:25px; }
+  .bar { height:100%; width:0%; background:linear-gradient(90deg,var(--purple),var(--pink)); transition:width .35s ease; }
+  .round { display:flex; align-items:center; gap:10px; color:#77718e; font-weight:750; font-size:.85rem; }
+  .round #roundIcon { display:inline-grid; flex:0 0 34px; place-items:center; background:#f0ebff; color:var(--purple); border-radius:10px; width:34px; height:34px; font-size:1.2rem; }
+  .round #roundLabel { display:block; width:auto; height:auto; min-width:0; background:transparent; color:#77718e; border-radius:0; font-size:.85rem; line-height:1.3; }
+  h2 { color:var(--navy); font-size:clamp(1.35rem,4vw,2rem); margin:20px 0 10px; }
+  .hint { color:#77718e; margin:0 0 20px; }
+  .emoji { font-size:clamp(2.6rem,10vw,4.5rem); letter-spacing:.1em; text-align:center; padding:22px 10px; background:linear-gradient(135deg,#f8f5ff,#fff0f5); border-radius:22px; margin:20px 0; }
+  .answers { display:grid; grid-template-columns:1fr; gap:10px; }
+  button { font:inherit; cursor:pointer; border:0; border-radius:15px; padding:15px 18px; font-weight:750; transition:transform .15s, box-shadow .15s, background .15s; }
+  .answer { background:#fff; border:1.5px solid #e7e1f7; color:var(--ink); text-align:left; min-width:0; overflow-wrap:anywhere; -webkit-appearance:none; appearance:none; }
+  button:disabled { opacity:1; }
+  .answer:hover { transform:translateY(-2px); border-color:#a895ff; box-shadow:0 8px 20px #4b2ca012; }
+  .answer:focus-visible, .primary:focus-visible, .secondary:focus-visible { outline:3px solid #ff70a6; outline-offset:3px; }
+  .feedback { min-height:30px; margin:14px 0 0; font-weight:700; }
+  .feedback.good { color:#27825c; } .feedback.bad { color:#b14c73; }
+  .actions { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:16px; }
+  .primary { background:var(--purple); color:white; box-shadow:0 8px 20px #6f4bf235; }
+  .primary:hover { background:#5936df; transform:translateY(-1px); }
+  .secondary { background:#f0ebff; color:#4d36b2; }
+  .hidden { display:none !important; }
+  .reveal { text-align:center; }
+  .ticket { margin:22px auto; max-width:490px; border-radius:22px; padding:25px; color:white; background:linear-gradient(135deg,#211a50,#5635b5 65%,#d94e9b); position:relative; overflow:hidden; }
+  .ticket:before,.ticket:after { content:""; position:absolute; width:30px;height:30px;background:var(--cream);border-radius:50%;top:calc(50% - 15px); }
+  .ticket:before {left:-16px}.ticket:after {right:-16px}
+  .ticket .big { font-size:clamp(2.3rem,8vw,4rem); margin:6px 0; }
+  .ticket h2 { color:white; margin:8px 0; }
+  .ticket p { margin:7px 0; color:#f5efff; }
+  .confetti { font-size:1.8rem; letter-spacing:.3em; }
+  .small { color:#77718e; font-size:.85rem; margin-top:18px; }
+  footer { text-align:center; color:#8a85a2; font-size:.8rem; margin-top:16px; }
+  @media(max-width:480px){
+    body { align-items:flex-start; padding-top:max(18px, env(safe-area-inset-top)); padding-bottom:max(18px, env(safe-area-inset-bottom)); }
+    .wrap { width:100%; }
+    .top { margin-bottom:14px; }
+    .card { padding:20px 16px; border-radius:22px; }
+    h1 { font-size:clamp(1.8rem,8vw,2.5rem); overflow-wrap:anywhere; }
+    h2 { font-size:clamp(1.3rem,6vw,1.8rem); }
+    .emoji { font-size:clamp(2rem,9vw,3rem); letter-spacing:.02em; padding:18px 8px; overflow-wrap:anywhere; }
+    .ticket { padding:22px 18px; }
+    .ticket h2 { font-size:clamp(1.25rem,6vw,1.65rem); overflow-wrap:anywhere; }
+    .actions { flex-direction:column; }
+    .actions button { width:100%; min-height:48px; }
+  }
+  @media(min-width:560px){ .answers { grid-template-columns:1fr 1fr; } }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div class="eyebrow">Geheime Mission für Carla</div>
+    <h1>🎁 Emoji-Quiz 🎁</h1>
+    <p class="sub">Carla, knacke die kleinen Rätsel – jedes bringt dich deinem Geschenk ein Stück näher. Bereit?</p>
+  </header>
+  <section class="card" id="quiz">
+    <div class="progress" aria-label="Fortschritt"><div class="bar" id="bar"></div></div>
+    <div class="round"><span id="roundIcon">🕵️‍♀️</span><span id="roundLabel">Rätsel 1 von 5</span></div>
+    <h2 id="question">Was könnten diese Emojis bedeuten?</h2>
+    <p class="hint" id="hint">Wähle die passende Antwort.</p>
+    <div class="emoji" id="emoji" aria-label="Emoji-Rätsel">🎟️ 🎭 ✨</div>
+    <div class="answers" id="answers"></div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+    <div class="actions"><button class="primary hidden" id="next">Weiter geht’s →</button></div>
+  </section>
+  <section class="card reveal hidden" id="finish">
+    <div class="confetti">✨ 🎉 🚂 🎉 ✨</div>
+    <p class="eyebrow">Mission erfüllt!</p>
+    <h1>Du hast es erraten, Carla! 💖</h1>
+    <p class="sub">Pack deine Vorfreude ein – es wartet ein ganz besonderer Tag auf dich.</p>
+    <div class="ticket">
+      <div>🎫 DEIN GESCHENK 🎫</div>
+      <div class="big">🚂✨</div>
+      <h2>STARLIGHT EXPRESS</h2>
+      <p><strong>Tickets für die Show</strong></p>
+      <p>plus ein gemeinsamer Tag in <strong>Bochum</strong>! 🏙️💫</p>
+      <p>Ein Tag voller Abenteuer, Staunen und schöner Erinnerungen.</p>
+    </div>
+    <p style="font-size:1.15rem;font-weight:800">Überraschung! Wir fahren nach Bochum! 🥳</p>
+    <p class="small">Das Datum planen wir gemeinsam – Hauptsache, das Abenteuer steht! 💌</p>
+    <div class="actions"><button class="primary" onclick="celebrate()">Noch einmal feiern 🎊</button><button class="secondary" onclick="restart()">Quiz noch mal spielen</button></div>
+  </section>
+  <footer>Mit Liebe vorbereitet 💌</footer>
+</main>
+<script>
+const puzzles = [
+  { icon:"🎟️", label:"Rätsel 1 von 5", q:"Womit beginnt unser Abenteuer?", hint:"Es ist etwas, das man für eine Show braucht …", emoji:"🎟️ 🎭 ✨", answers:["Mit Tickets für eine Vorstellung","Mit einem Kochkurs","Mit einem Strandurlaub","Mit einem neuen Fahrrad"], correct:0, success:"Richtig! Da wartet eine Vorstellung auf dich. 👀" },
+  { icon:"🚂", label:"Rätsel 2 von 5", q:"Welches Verkehrsmittel ist hier der Star?", hint:"Es fährt auf Schienen – aber es ist mehr als nur eine Zugfahrt.", emoji:"🚂 🛤️ 💨", answers:["Ein Flugzeug ✈️","Ein Zug 🚂","Ein Schiff 🚢","Ein Heißluftballon 🎈"], correct:1, success:"Ganz genau – hier dreht sich alles um einen Zug! 🚂" },
+  { icon:"⭐", label:"Rätsel 3 von 5", q:"Wie heißt die Show?", hint:"Zwei englische Wörter: ein leuchtendes Himmelsobjekt + eine schnelle Bewegung.", emoji:"⭐ 💡 ➕ 🚄 💨", answers:["Moonlight Slowdance","Starlight Express","Sunshine Bus","Midnight Taxi"], correct:1, success:"Ja! ⭐ Starlight Express ist die richtige Spur!" },
+  { icon:"📍", label:"Rätsel 4 von 5", q:"In welche Stadt geht unser Ausflug?", hint:"Eine Stadt im Ruhrgebiet – und die Heimat der Show.", emoji:"🇩🇪 🏙️ ⚽", answers:["Hamburg","Dresden","Bochum","München"], correct:2, success:"Bochum! 🎉 Und dort wartet noch mehr als nur die Show." },
+  { icon:"💝", label:"Rätsel 5 von 5", q:"Was ist das eigentliche Geschenk?", hint:"Denk an gemeinsame Zeit, große Bühne und einen besonderen Tag.", emoji:"🎫 🚂 ✨ 🏙️ 🥰", answers:["Ein Tag allein zu Hause","Tickets für Starlight Express + ein Tag in Bochum","Ein Gutschein für Socken","Ein Reiseführer"], correct:1, success:"Du hast alle Hinweise zusammengesetzt! Jetzt kommt die Auflösung … 💖" }
+];
+let current = 0;
+const $ = id => document.getElementById(id);
+function render(){
+  const p=puzzles[current];
+  $("roundIcon").textContent=p.icon; $("roundLabel").textContent=p.label;
+  $("question").textContent=p.q; $("hint").textContent=p.hint; $("emoji").textContent=p.emoji;
+  $("bar").style.width=(current/puzzles.length*100)+"%";
+  $("feedback").textContent=""; $("feedback").className="feedback";
+  $("next").classList.add("hidden"); $("answers").innerHTML="";
+  p.answers.forEach((answer,i)=>{
+    const b=document.createElement("button"); b.className="answer"; b.textContent=answer;
+    b.addEventListener("click",()=>choose(i)); $("answers").appendChild(b);
+  });
+}
+function choose(i){
+  const p=puzzles[current], buttons=[...$("answers").querySelectorAll("button")];
+  buttons.forEach(b=>b.disabled=true);
+  if(i===p.correct){
+    $("feedback").textContent=p.success; $("feedback").className="feedback good";
+    $("next").textContent=current===puzzles.length-1?"Geschenk enthüllen 🎁":"Weiter geht’s →";
+    $("next").classList.remove("hidden");
+    $("bar").style.width=((current+1)/puzzles.length*100)+"%";
+  } else {
+    $("feedback").textContent="Noch nicht ganz – versuch’s noch einmal! 😉"; $("feedback").className="feedback bad";
+    buttons.forEach(b=>b.disabled=false);
+    buttons[i].focus();
+  }
+}
+$("next").addEventListener("click",()=>{
+  if(current<puzzles.length-1){current++;render();}
+  else {$("quiz").classList.add("hidden");$("finish").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"});}
+});
+function restart(){current=0;$("finish").classList.add("hidden");$("quiz").classList.remove("hidden");render();window.scrollTo({top:0,behavior:"smooth"});}
+function celebrate(){
+  const emojis=["🎉","✨","💖","🚂","🎟️","🥳"];
+  const box=document.createElement("div");box.className="confetti";box.style.margin="15px";
+  box.textContent=emojis.sort(()=>Math.random()-.5).join(" ");
+  $("finish").insertBefore(box,$("finish").querySelector(".ticket"));
+  setTimeout(()=>box.remove(),2200);
+}
+render();
+</script>
+</body>
+</html>
