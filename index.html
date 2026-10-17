@@ -30,6 +30,12 @@
   .hint { color:#77718e; margin:0 0 20px; }
   .emoji { font-size:clamp(2.6rem,10vw,4.5rem); letter-spacing:.1em; text-align:center; padding:22px 10px; background:linear-gradient(135deg,#f8f5ff,#fff0f5); border-radius:22px; margin:20px 0; }
   .answers { display:grid; grid-template-columns:1fr; gap:10px; }
+  .word-puzzle { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:20px 0; }
+  .word-slot { min-width:0; background:#f8f5ff; border:1px solid #e7e1f7; border-radius:16px; padding:12px 8px; text-align:center; }
+  .word-emoji { font-size:clamp(2rem,7vw,3rem); margin-bottom:8px; }
+  .word-slot input { width:100%; min-width:0; border:1.5px solid #d9d0f5; border-radius:10px; padding:12px 5px; font:inherit; font-weight:700; text-align:center; background:white; color:var(--ink); }
+  .word-slot input:focus { outline:3px solid #d7caff; border-color:var(--purple); }
+  .word-slot input.correct { border-color:#27825c; background:#effbf5; }
   button { font:inherit; cursor:pointer; border:0; border-radius:15px; padding:15px 18px; font-weight:750; transition:transform .15s, box-shadow .15s, background .15s; }
   .answer { background:#fff; border:1.5px solid #e7e1f7; color:var(--ink); text-align:left; min-width:0; overflow-wrap:anywhere; -webkit-appearance:none; appearance:none; }
   button:disabled { opacity:1; }
@@ -60,6 +66,9 @@
     h1 { font-size:clamp(1.8rem,8vw,2.5rem); overflow-wrap:anywhere; }
     h2 { font-size:clamp(1.3rem,6vw,1.8rem); }
     .emoji { font-size:clamp(2rem,9vw,3rem); letter-spacing:.02em; padding:18px 8px; overflow-wrap:anywhere; }
+    .word-puzzle { gap:6px; }
+    .word-slot { padding:10px 5px; }
+    .word-slot input { font-size:.9rem; padding:11px 2px; }
     .ticket { padding:22px 18px; }
     .ticket h2 { font-size:clamp(1.25rem,6vw,1.65rem); overflow-wrap:anywhere; }
     .actions { flex-direction:column; }
@@ -83,6 +92,7 @@
     <p class="hint" id="hint">Wähle die passende Antwort.</p>
     <div class="emoji" id="emoji" aria-label="Emoji-Rätsel">🎟️ 🎭 ✨</div>
     <div class="answers" id="answers"></div>
+    <div class="word-puzzle hidden" id="wordPuzzle"></div>
     <p class="feedback" id="feedback" aria-live="polite"></p>
     <div class="actions"><button class="primary hidden" id="next">Weiter geht’s →</button></div>
   </section>
@@ -109,7 +119,7 @@
 const puzzles = [
   { icon:"🎟️", label:"Rätsel 1 von 5", q:"Womit beginnt unser Abenteuer?", hint:"Es ist etwas, das man für eine Show braucht …", emoji:"🎟️ 🎭 ✨", answers:["Mit Tickets für eine Vorstellung","Mit einem Kochkurs","Mit einem Strandurlaub","Mit einem neuen Fahrrad"], correct:0, success:"Richtig! Da wartet eine Vorstellung auf dich. 👀" },
   { icon:"🚂", label:"Rätsel 2 von 5", q:"Welches Verkehrsmittel ist hier der Star?", hint:"Es fährt auf Schienen – aber es ist mehr als nur eine Zugfahrt.", emoji:"🚂 🛤️ 💨", answers:["Ein Flugzeug ✈️","Ein Zug 🚂","Ein Schiff 🚢","Ein Heißluftballon 🎈"], correct:1, success:"Ganz genau – hier dreht sich alles um einen Zug! 🚂" },
-  { icon:"⭐", label:"Rätsel 3 von 5", q:"Wie heißt die Show?", hint:"Zwei englische Wörter: ein leuchtendes Himmelsobjekt + eine schnelle Bewegung.", emoji:"⭐ 💡 ➕ 🚄 💨", answers:["Moonlight Slowdance","Starlight Express","Sunshine Bus","Midnight Taxi"], correct:1, success:"Ja! ⭐ Starlight Express ist die richtige Spur!" },
+  { icon:"⭐", label:"Rätsel 3 von 5", type:"words", q:"Entschlüssele den Namen der Show!", hint:"Tippe die drei englischen Wörter passend zu den Emojis ein – jedes Feld steht für ein Wort.", emoji:"", words:[{emoji:"⭐",answer:"star"},{emoji:"💡",answer:"light"},{emoji:"🚄",answer:"express"}], success:"Perfekt! ⭐ Star + Light + Express = Starlight Express!" },
   { icon:"📍", label:"Rätsel 4 von 5", q:"In welche Stadt geht unser Ausflug?", hint:"Eine Stadt im Ruhrgebiet – und die Heimat der Show.", emoji:"🇩🇪 🏙️ ⚽", answers:["Hamburg","Dresden","Bochum","München"], correct:2, success:"Bochum! 🎉 Und dort wartet noch mehr als nur die Show." },
   { icon:"💝", label:"Rätsel 5 von 5", q:"Was ist das eigentliche Geschenk?", hint:"Denk an gemeinsame Zeit, große Bühne und einen besonderen Tag.", emoji:"🎫 🚂 ✨ 🏙️ 🥰", answers:["Ein Tag allein zu Hause","Tickets für Starlight Express + ein Tag in Bochum","Ein Gutschein für Socken","Ein Reiseführer"], correct:1, success:"Du hast alle Hinweise zusammengesetzt! Jetzt kommt die Auflösung … 💖" }
 ];
@@ -118,14 +128,55 @@ const $ = id => document.getElementById(id);
 function render(){
   const p=puzzles[current];
   $("roundIcon").textContent=p.icon; $("roundLabel").textContent=p.label;
-  $("question").textContent=p.q; $("hint").textContent=p.hint; $("emoji").textContent=p.emoji;
+  $("question").textContent=p.q; $("hint").textContent=p.hint; $("emoji").textContent=p.emoji || "";
   $("bar").style.width=(current/puzzles.length*100)+"%";
   $("feedback").textContent=""; $("feedback").className="feedback";
   $("next").classList.add("hidden"); $("answers").innerHTML="";
-  p.answers.forEach((answer,i)=>{
-    const b=document.createElement("button"); b.className="answer"; b.textContent=answer;
-    b.addEventListener("click",()=>choose(i)); $("answers").appendChild(b);
+  $("wordPuzzle").innerHTML=""; $("wordPuzzle").classList.add("hidden"); $("answers").classList.remove("hidden");
+  if(p.type==="words"){
+    $("emoji").classList.add("hidden");
+    $("wordPuzzle").classList.remove("hidden");
+    p.words.forEach((word,i)=>{
+      const slot=document.createElement("label"); slot.className="word-slot";
+      const emoji=document.createElement("div"); emoji.className="word-emoji"; emoji.textContent=word.emoji;
+      const input=document.createElement("input"); input.type="text"; input.autocomplete="off"; input.autocapitalize="none"; input.spellcheck=false;
+      input.id="word"+i; input.setAttribute("aria-label","Wort "+(i+1)+" für Emoji "+word.emoji); input.placeholder="Wort "+(i+1);
+      input.addEventListener("keydown",e=>{if(e.key==="Enter") checkWords();});
+      slot.append(emoji,input); $("wordPuzzle").appendChild(slot);
+    });
+    const check=document.createElement("button"); check.className="primary"; check.textContent="Wörter überprüfen ✓"; check.style.width="100%"; check.style.marginTop="10px";
+    check.id="checkWords"; check.addEventListener("click",checkWords); $("answers").appendChild(check);
+    $("wordPuzzle").insertAdjacentElement("afterend",$("answers"));
+    $("word0").focus({preventScroll:true});
+  } else {
+    $("emoji").classList.remove("hidden");
+    p.answers.forEach((answer,i)=>{
+      const b=document.createElement("button"); b.className="answer"; b.textContent=answer;
+      b.addEventListener("click",()=>choose(i)); $("answers").appendChild(b);
+    });
+  }
+}
+function checkWords(){
+  const p=puzzles[current];
+  let allCorrect=true;
+  p.words.forEach((word,i)=>{
+    const input=$("word"+i);
+    const correct=input.value.trim().toLowerCase()===word.answer;
+    input.classList.toggle("correct",correct);
+    if(!correct) allCorrect=false;
   });
+  if(allCorrect){
+    $("feedback").textContent=p.success; $("feedback").className="feedback good";
+    $("wordPuzzle").querySelectorAll("input").forEach(input=>input.disabled=true);
+    $("checkWords").disabled=true;
+    $("next").textContent="Weiter geht’s →"; $("next").classList.remove("hidden");
+    $("bar").style.width=((current+1)/puzzles.length*100)+"%";
+  } else {
+    $("feedback").textContent="Fast! Schau dir die Emojis noch einmal an und probiere die Wörter einzeln. 😉";
+    $("feedback").className="feedback bad";
+    const first=[...$("wordPuzzle").querySelectorAll("input")].find(input=>!input.classList.contains("correct"));
+    if(first) first.focus();
+  }
 }
 function choose(i){
   const p=puzzles[current], buttons=[...$("answers").querySelectorAll("button")];
