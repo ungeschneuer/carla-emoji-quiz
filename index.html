@@ -63,10 +63,9 @@ button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:15px 18px
 </main>
 <script>
 const puzzles = [
-  { icon:"⭐", label:"Rätsel 1 von 3", type:"words", q:"Entschlüssele den Namen der Show!", hint:"Tippe die vier Teile passend zu den Emojis ein.", emoji:"", words:[{emoji:"⭐",answer:"star"},{emoji:"💡",answer:"light"},{emoji:"❌",answer:"ex"},{emoji:"📰",answer:"presse"}], success:"Perfekt! ⭐ Star + Light + Ex + Presse = Starlight Express! 🚂" },
-  { icon:"📍", label:"Rätsel 2 von 3", q:"In welche Stadt geht unser Ausflug?", hint:"Eine Stadt im Ruhrgebiet – tippe ihren Namen ein.", emoji:"🇩🇪 🏙️ ⚽", accepted:["bochum"], success:"Bochum! 🎉 Und dort wartet noch mehr als nur die Show." },
-  { icon:"💝", label:"Rätsel 3 von 3", q:"Was ist das eigentliche Geschenk?", hint:"Tippe den Namen der Show ein – die große Überraschung wartet gleich danach.", emoji:"🎫 🚂 ✨ 🏙️ 🥰", accepted:["starlight express","tickets für starlight express","starlight express und bochum"], success:"Du hast alle Hinweise zusammengesetzt! Jetzt kommt die Auflösung … 💖" }
-];;
+  { icon:"📍", label:"Rätsel 1 von 2", q:"In welche Stadt geht unser Ausflug?", hint:"Eine Stadt im Ruhrgebiet – tippe ihren Namen ein.", emoji:"⛏️ 🏙️ ⚽", accepted:["bochum"], success:"Bochum! 🎉 Und dort wartet noch mehr als nur die Show." },
+  { icon:"⭐", label:"Rätsel 2 von 2", type:"words", q:"Entschlüssele den Namen der Show!", hint:"Tippe die vier Teile passend zu den Emojis ein.", emoji:"", words:[{emoji:"⭐",answer:"star"},{emoji:"💡",answer:"light"},{emoji:"❌",answer:"ex"},{emoji:"📰",answer:"presse"}], success:"Perfekt! ⭐ Star + Light + Ex + Presse = Starlight Express! 🚂" }
+];;;
 let current = 0;
 const $ = id => document.getElementById(id);
 function normalizeAnswer(value){return value.trim().toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/\\s+/g," ");}
